@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1c2740">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="正字">
+<meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>正字 · 从简体走到一页古书</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Noto+Sans+SC:wght@400;500;700&family=LXGW+WenKai+TC&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#1c2740;--indigo2:#27355a;--indigo3:#3a4b78;
+  --paper:#efe9dc;--paper2:#e3dac6;--line:#cbbfa6;
+  --ink:#1b1a18;--muted:#776e60;--zhu:#b5321f;--zhu-soft:#f3d9d2;--ok:#3d6b4f;
+  --serif:"Noto Serif TC","Source Han Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --kai:"LXGW WenKai TC","Kaiti TC","KaiTi",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{max-width:100%;overflow-x:hidden}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.7;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--zhu);outline-offset:2px;border-radius:4px}
+.tc{font-family:var(--serif)}
+.kai{font-family:var(--kai)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:50;background:var(--indigo);color:var(--paper);border-bottom:1px solid #0e1526}
+.bar .wrap{display:flex;align-items:center;height:64px;gap:28px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.1em}
+.seal{display:inline-grid;place-items:center;width:38px;height:38px;background:var(--zhu);color:#fff;font-family:var(--serif);font-weight:900;font-size:22px;border-radius:4px}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{color:#c9cfdf;text-decoration:none;font-size:15px;padding:8px 14px;border-radius:6px}
+.nav a:hover{color:#fff;background:var(--indigo2)}
+.prog-mini{display:flex;align-items:center;gap:10px;font-size:13px;color:#aeb6cc}
+.prog-mini .track{width:90px;height:6px;background:var(--indigo2);border-radius:3px;overflow:hidden}
+.prog-mini .fill{height:100%;background:var(--zhu);width:0;transition:width .6s}
+
+/* ---------- hero ---------- */
+.hero{background:var(--indigo);color:var(--paper);padding:64px 0 88px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 3px,rgba(255,255,255,.012) 3px 4px);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:64px;align-items:center}
+.eyebrow{font-size:13px;letter-spacing:.32em;color:#e3a08f;font-weight:700}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:64px;line-height:1.15;margin:18px 0 22px;letter-spacing:.02em}
+.hero h1 em{font-style:normal;color:#e9a594}
+.hero p.lead{font-size:18px;color:#c4cbdc;max-width:30em}
+.hero .cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:8px;font-weight:700;font-size:16px;transition:transform .15s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-zhu{background:var(--zhu);color:#fff}
+.btn-zhu:hover{background:#9c2a19}
+.btn-ghost{border:1px solid #56648b;color:#dfe3ee}
+.btn-ghost:hover{background:var(--indigo2)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ink:hover{background:#000}
+.btn-line{border:1px solid var(--line);color:var(--ink);background:#f7f3ea}
+.btn-line:hover{border-color:var(--ink)}
+.stats{display:flex;gap:36px;margin-top:44px;padding-top:26px;border-top:1px solid var(--indigo3)}
+.stats div{font-size:13px;color:#9aa4bd}
+.stats b{display:block;font-family:var(--serif);font-size:30px;color:var(--paper);font-weight:600;line-height:1.2}
+
+/* signature: woodblock page */
+.page-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.page{background:var(--paper);color:var(--ink);padding:26px 22px;border-radius:2px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px #d8cfb9 inset;position:relative}
+.frame{border:3px solid var(--ink);padding:3px;display:flex}
+.frame-in{border:1px solid var(--ink);display:flex;flex-direction:row-reverse}
+.col{writing-mode:vertical-rl;font-family:var(--serif);font-size:26px;line-height:1;letter-spacing:.32em;width:46px;height:388px;padding:14px 0;border-left:1px solid var(--ink);display:flex;align-items:center;font-weight:600;position:relative}
+.col:last-child{border-left:none}
+.col.banxin{width:34px;font-size:13px;letter-spacing:.15em;font-weight:400;justify-content:space-between;background:rgba(0,0,0,.02)}
+.yuwei{writing-mode:horizontal-tb;width:100%;height:16px;position:relative}
+.yuwei::before{content:"";position:absolute;left:3px;right:3px;top:0;height:14px;background:var(--ink);clip-path:polygon(0 0,100% 0,100% 100%,50% 45%,0 100%)}
+.yuwei.down::before{clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)}
+.ch{position:relative;display:inline-block;padding:3px 0}
+.ch.dou::after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;border:2px solid var(--zhu);left:-6px;bottom:-3px;transform:scale(0);transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.page.marked .ch.dou::after{transform:scale(1)}
+.page.marked .ch.dou.d1::after{transition-delay:.05s}.page.marked .ch.dou.d2::after{transition-delay:.2s}.page.marked .ch.dou.d3::after{transition-delay:.35s}.page.marked .ch.dou.d4::after{transition-delay:.5s}.page.marked .ch.dou.d5::after{transition-delay:.65s}.page.marked .ch.dou.d6::after{transition-delay:.8s}.page.marked .ch.dou.d7::after{transition-delay:.95s}
+.ch.old{color:var(--ink)}
+.page.lens .ch.old{color:var(--zhu)}
+.page-ctl{display:flex;gap:10px}
+.chip{font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid #56648b;color:#dfe3ee}
+.chip[aria-pressed="true"]{background:var(--zhu);border-color:var(--zhu);color:#fff}
+.page-cap{font-family:var(--kai);font-size:15px;color:#aeb6cc;text-align:center;max-width:380px}
+
+/* ---------- sections ---------- */
+section.blk{padding:88px 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--serif);font-size:42px;font-weight:900;line-height:1.2}
+.sec-head p{color:var(--muted);max-width:36em}
+.sec-label{font-size:13px;letter-spacing:.3em;color:var(--zhu);font-weight:700;margin-bottom:10px}
+
+/* path */
+.path{display:grid;grid-template-columns:repeat(7,1fr);border-top:3px solid var(--ink);border-bottom:1px solid var(--ink)}
+.stage{padding:22px 16px 24px;border-right:1px solid var(--line);position:relative;text-align:left;display:flex;flex-direction:column;gap:6px;transition:background .2s}
+.stage:last-child{border-right:none}
+.stage:hover{background:#f6f1e6}
+.stage .wk{font-size:12px;color:var(--muted);letter-spacing:.1em}
+.stage .big{font-family:var(--serif);font-size:44px;font-weight:900;line-height:1.1}
+.stage .nm{font-weight:700;font-size:16px}
+.stage .ds{font-size:13px;color:var(--muted);line-height:1.55}
+.stage .bar2{height:4px;background:var(--paper2);border-radius:2px;margin-top:auto;overflow:hidden}
+.stage .bar2 i{display:block;height:100%;background:var(--zhu);width:0;transition:width .6s}
+.stage .pct{font-size:12px;color:var(--muted)}
+.stage.done .big{color:var(--zhu)}
+.stage.done::after{content:"已成";position:absolute;top:16px;right:12px;font-family:var(--serif);font-weight:900;font-size:13px;color:var(--zhu);border:2px solid var(--zhu);padding:1px 5px;transform:rotate(8deg);border-radius:3px}
+.daily{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}
+.daily div{background:#f7f3ea;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.daily b{display:block;font-size:15px;margin-bottom:2px}
+.daily span{font-size:14px;color:var(--muted)}
+
+/* lesson area */
+#study{background:var(--paper2)}
+.lesson-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.ltab{padding:9px 16px;border-radius:8px;font-size:15px;background:#efe8d8;border:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.ltab .n{font-family:var(--serif);font-weight:900;color:var(--muted)}
+.ltab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ltab[aria-selected="true"] .n{color:#e9a594}
+.ltab .ok{width:8px;height:8px;border-radius:50%;background:var(--zhu);display:none}
+.ltab.done .ok{display:inline-block}
+.lesson{background:var(--paper);border-radius:14px;border:1px solid var(--line);overflow:hidden}
+.l-head{padding:34px 40px 26px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center}
+.l-num{font-family:var(--serif);font-size:84px;font-weight:900;line-height:1;color:var(--zhu)}
+.l-head h3{font-family:var(--serif);font-size:32px;font-weight:900;line-height:1.3}
+.l-head .goal{color:var(--muted);margin-top:4px}
+.ring{width:84px;height:84px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring span{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:15px}
+.l-modes{display:flex;gap:0;border-bottom:1px solid var(--line);padding:0 40px}
+.mode{padding:14px 18px;font-size:15px;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.mode[aria-selected="true"]{color:var(--ink);border-color:var(--zhu);font-weight:700}
+.l-body{padding:34px 40px 42px;min-height:360px;min-width:0}
+.lesson,.panel,.side,.prose,.quiz{min-width:0}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+
+.prose{max-width:760px}
+.prose p{margin-bottom:14px;font-size:16.5px}
+.prose h4{font-size:18px;margin:26px 0 10px}
+.pi{font-family:var(--kai);color:var(--zhu);background:var(--zhu-soft);padding:14px 18px;border-radius:8px;margin:18px 0;font-size:16.5px;border-left:4px solid var(--zhu)}
+table.cmp{border-collapse:collapse;margin:14px 0 6px;width:100%;max-width:760px}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;font-size:15px}
+.cmp th{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.05em}
+.cmp td.g{font-family:var(--serif);font-size:28px;font-weight:600}
+.cmp td.g.r{color:var(--zhu)}
+
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{background:#f7f3ea;border:1px solid var(--line);border-radius:10px;padding:16px 18px;position:relative}
+.card .pair{display:flex;align-items:baseline;gap:10px}
+.card .s{font-size:30px;color:var(--muted)}
+.card .arr{color:var(--zhu)}
+.card .t{font-family:var(--serif);font-size:40px;font-weight:900}
+.card .t small{font-size:15px;font-weight:400;color:var(--muted)}
+.card .nt{font-family:var(--kai);font-size:14.5px;color:var(--muted);margin-top:4px}
+.card .ex{font-family:var(--serif);font-size:20px;margin-top:8px;letter-spacing:.12em}
+.card.m::after{content:"";position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;background:var(--ok)}
+.word-list{display:flex;flex-direction:column;gap:12px}
+.wl-row{display:grid;grid-template-columns:72px minmax(0,1fr);gap:20px;align-items:start;background:#f7f3ea;border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.wl-row .big{font-size:40px;font-weight:700;color:var(--muted);line-height:1.1;text-align:center}
+.wl-row .big small{display:block;font-size:12px;font-weight:400}
+.wl-items{display:flex;flex-wrap:wrap;gap:8px 18px}
+.wl-items span{font-size:14px;color:var(--muted)}
+.wl-items b{font-family:var(--serif);font-size:21px;color:var(--ink);font-weight:600;margin-right:4px}
+.hl{color:var(--zhu)}
+
+/* quiz */
+.quiz{max-width:640px;margin:0 auto;text-align:center}
+.q-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:16px}
+.q-dots{display:flex;gap:4px}
+.q-dots i{width:16px;height:4px;border-radius:2px;background:var(--line)}
+.q-dots i.y{background:var(--ok)}.q-dots i.n{background:var(--zhu)}.q-dots i.c{background:var(--ink)}
+.q-prompt{font-size:15px;color:var(--muted)}
+.q-word{font-size:68px;font-weight:500;line-height:1.3;margin:10px 0 6px;letter-spacing:.06em}
+.q-word.tc{font-weight:900}
+.q-hint{font-family:var(--kai);font-size:16px;color:var(--muted);min-height:26px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:28px 0 18px}
+.opt{font-family:var(--serif);font-size:38px;font-weight:600;padding:16px 8px;border-radius:10px;background:#f7f3ea;border:2px solid var(--line);transition:border-color .15s,transform .15s}
+.opt:hover:not(:disabled){border-color:var(--ink);transform:translateY(-2px)}
+.opt.right{border-color:var(--ok);background:#e2ece4;color:var(--ok)}
+.opt.wrong{border-color:var(--zhu);background:var(--zhu-soft);color:var(--zhu)}
+.opt:disabled{cursor:default}
+.q-fb{min-height:56px;font-family:var(--kai);font-size:17px}
+.q-fb.good{color:var(--ok)}.q-fb.bad{color:var(--zhu)}
+.q-end{padding:30px 0}
+.q-end .score{font-family:var(--serif);font-size:72px;font-weight:900;color:var(--zhu);line-height:1}
+
+/* reading / judou */
+.passages{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.pchip{padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:14px;background:#f7f3ea}
+.pchip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.read-area{display:grid;grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:start}
+.vpage{min-width:0;background:#f7f3ea;border:3px double var(--ink);padding:18px;display:flex;flex-direction:row-reverse;max-width:100%;overflow-x:auto}
+.vcol{writing-mode:vertical-rl;font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:.18em;border-left:1px solid #b9ad94;white-space:nowrap;padding:0 8px;line-height:1.5}
+.vcol:last-child{border-left:none}
+.rch{cursor:pointer;border-radius:3px;position:relative;padding:2px 0;transition:background .12s}
+.rch:hover{background:var(--zhu-soft)}
+.rch.sel{background:var(--zhu);color:#fff}
+.rch.brk::after{content:"";position:absolute;width:8px;height:8px;border:2px solid var(--zhu);border-radius:50%;left:-4px;bottom:-4px}
+.rch.miss::after{content:"";position:absolute;width:8px;height:8px;border:2px dashed var(--muted);border-radius:50%;left:-4px;bottom:-4px}
+.rch.extra::after{border-color:var(--muted);background:var(--muted)}
+.rch.diff{text-decoration:underline;text-decoration-color:var(--zhu);text-underline-offset:6px}
+.side h4{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:4px}
+.side .src{color:var(--muted);font-size:14px;margin-bottom:18px}
+.gloss{background:#f7f3ea;border:1px solid var(--line);border-radius:10px;padding:18px 20px;min-height:130px}
+.gloss .gc{font-family:var(--serif);font-size:52px;font-weight:900;line-height:1;color:var(--zhu)}
+.gloss .gs{font-size:15px;color:var(--muted);margin-top:8px}
+.gloss .gn{font-family:var(--kai);font-size:16px;margin-top:8px}
+.trans{font-size:15.5px;margin-top:18px;line-height:1.8}
+.trans b{display:block;font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.1em}
+.ctl-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.jd-result{font-family:var(--kai);font-size:17px;margin-top:14px;min-height:28px}
+
+/* tools */
+.tools{display:grid;grid-template-columns:1.1fr 1fr;gap:28px}
+.panel{background:#f7f3ea;border:1px solid var(--line);border-radius:14px;padding:28px 30px}
+.panel h3{font-family:var(--serif);font-size:26px;font-weight:900;margin-bottom:4px}
+.panel .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.lookup{display:flex;gap:10px}
+.lookup input{flex:1;min-width:0;width:100%;font:inherit;font-size:20px;padding:12px 16px;border:2px solid var(--line);border-radius:8px;background:var(--paper)}
+.lookup input:focus{outline:none;border-color:var(--ink)}
+.lk-res{margin-top:18px;display:flex;flex-direction:column;gap:10px;max-height:340px;overflow:auto}
+.lk-item{display:flex;gap:16px;align-items:center;padding:10px 14px;background:var(--paper);border-radius:8px;border:1px solid var(--line)}
+.lk-item .s{font-size:28px;color:var(--muted);width:40px;text-align:center}
+.lk-item .t{font-family:var(--serif);font-size:32px;font-weight:900;min-width:48px}
+.lk-item .d{font-size:14px;color:var(--muted)}
+.lk-item .d{min-width:0;flex:1}
+.lk-item .tag{font-size:12px;border:1px solid var(--zhu);color:var(--zhu);border-radius:4px;padding:0 6px;margin-left:auto;white-space:nowrap}
+.mist{display:flex;flex-wrap:wrap;gap:10px;min-height:80px}
+.mist span{font-family:var(--serif);font-size:24px;font-weight:600;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+.mist span small{font-family:var(--sans);font-size:12px;color:var(--muted);margin-left:6px;font-weight:400}
+.empty{color:var(--muted);font-family:var(--kai);font-size:16px}
+
+
+/* ---------- 偏旁分步学习 ---------- */
+.stepper{display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;align-items:start}
+.grail{display:flex;flex-direction:column;gap:8px;position:sticky;top:84px}
+.grail-h{font-size:12px;letter-spacing:.2em;color:var(--muted);margin-bottom:4px}
+.gbtn{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;padding:12px 12px;border-radius:10px;border:1px solid var(--line);background:#f7f3ea;transition:border-color .15s,background .15s}
+.gbtn:hover:not(:disabled){border-color:var(--ink)}
+.gbtn:disabled{opacity:.5;cursor:not-allowed}
+.gbtn .gn{font-family:var(--serif);font-weight:900;font-size:22px;color:var(--muted);text-align:center}
+.gbtn .gt{font-weight:700;font-size:14.5px;line-height:1.3}
+.gbtn .gr{font-size:13px;color:var(--muted);letter-spacing:.12em}
+.gbtn .gs{font-size:12px;color:var(--muted)}
+.gbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.gbtn.on .gn,.gbtn.on .gr,.gbtn.on .gs{color:#e9a594}
+.gbtn.pass .gs{color:var(--zhu);font-family:var(--serif);font-weight:900;border:1.5px solid currentColor;padding:0 4px;border-radius:3px;transform:rotate(6deg)}
+.gbtn.on.pass .gs{color:#e9a594}
+.steps{display:flex;align-items:center;margin-bottom:26px}
+.st{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);white-space:nowrap}
+.st i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line);font-family:var(--serif);font-weight:900;font-size:15px;background:#f7f3ea}
+.st.now{color:var(--ink);font-weight:700}.st.now i{background:var(--zhu);border-color:var(--zhu);color:#fff}
+.st.past i{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.st-line{flex:1;height:1.5px;background:var(--line);margin:0 10px;min-width:14px}
+.st-line.past{background:var(--ink)}
+.g-title{font-family:var(--serif);font-size:26px;font-weight:900;margin-bottom:4px}
+.g-why{color:var(--muted);margin-bottom:22px;max-width:40em}
+.radbig{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.rb{background:#f7f3ea;border:1px solid var(--line);border-radius:12px;padding:20px 20px 18px}
+.rb-pair{display:flex;align-items:center;gap:14px}
+.rb-s{font-size:46px;color:var(--muted);line-height:1}
+.rb-a{color:var(--zhu);font-size:22px}
+.rb-t{font-family:var(--serif);font-size:64px;font-weight:900;line-height:1}
+.rb-alt{font-size:13px;color:var(--muted);margin-left:auto;text-align:right;line-height:1.4}
+.rb-alt b{font-family:var(--serif);font-size:24px;color:var(--ink);display:block}
+.rb-mean{font-weight:700;font-size:15px;margin-top:14px}
+.rb-tip{font-family:var(--kai);font-size:15.5px;color:var(--muted);margin-top:4px;line-height:1.6}
+.flipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.flip{background:#f7f3ea;border:1.5px dashed var(--line);border-radius:12px;padding:16px 8px 12px;text-align:center;min-height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .15s,background .2s}
+.flip:hover{border-color:var(--ink)}
+.flip .fs{font-size:34px;color:var(--muted);line-height:1.1}
+.flip .fq{font-size:13px;color:var(--muted)}
+.flip .ft{font-family:var(--serif);font-size:44px;font-weight:900;line-height:1.1;display:none}
+.flip .ft em{font-style:normal;color:var(--zhu)}
+.flip .fr{font-size:12px;color:var(--muted);display:none}
+.flip.open{border-style:solid;border-color:var(--ink);background:var(--paper)}
+.flip.open .ft,.flip.open .fr{display:block}
+.flip.open .fq{display:none}
+.flip.open .fs{font-size:18px}
+.g-count{font-size:14px;color:var(--muted);margin-top:14px}
+.g-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;align-items:center}
+.g-actions .btn:disabled{opacity:.4;cursor:not-allowed}
+.q-type{display:inline-block;font-size:12px;letter-spacing:.15em;color:var(--zhu);border:1px solid var(--zhu);border-radius:4px;padding:1px 8px;margin-bottom:10px}
+.opt.rad{font-size:34px}
+.pass-card{text-align:center;padding:20px 0 6px}
+.pass-seal{display:inline-grid;place-items:center;width:120px;height:120px;border:4px solid var(--zhu);color:var(--zhu);font-family:var(--serif);font-weight:900;font-size:40px;line-height:1.1;border-radius:8px;transform:rotate(-6deg);margin-bottom:16px;animation:stamp .45s cubic-bezier(.3,1.5,.5,1)}
+.pass-seal.fail{border-color:var(--muted);color:var(--muted);animation:none;transform:none}
+@keyframes stamp{from{transform:scale(1.8) rotate(-6deg);opacity:0}to{transform:scale(1) rotate(-6deg);opacity:1}}
+.pass-score{font-size:15px;color:var(--muted);margin-bottom:6px}
+.pass-recap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 4px}
+.pass-recap span{font-family:var(--serif);font-size:22px;font-weight:700;background:#f7f3ea;border:1px solid var(--line);border-radius:8px;padding:4px 12px}
+.pass-recap span.x{border-color:var(--zhu);color:var(--zhu)}
+.guide{background:#f7f3ea;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:26px;font-size:15px}
+.guide summary{cursor:pointer;font-weight:700}
+.guide p{margin-top:10px;color:var(--muted)}
+@media (max-width:860px){
+  .stepper{grid-template-columns:minmax(0,1fr);gap:18px}
+  .grail{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  .grail-h{display:none}
+  .gbtn{flex:none;width:210px}.gbtn .gt{white-space:nowrap}
+  .st span{display:none}
+  .st-line{margin:0 6px}
+  .rb-t{font-size:54px}
+}
+
+
+/* ---------- 句读分关 ---------- */
+.clue{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.clue span{font-family:var(--serif);font-size:24px;font-weight:900;color:var(--zhu);background:var(--zhu-soft);border-radius:6px;padding:2px 12px}
+.demo{background:#f7f3ea;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:8px 0 6px}
+.demo .raw{font-family:var(--serif);font-size:26px;letter-spacing:.12em;line-height:1.7;word-break:break-all}
+.demo .raw b{color:var(--zhu)}
+.demo .raw .cut{display:inline-block;width:9px;height:9px;border:2px solid var(--zhu);border-radius:50%;margin:0 3px 0 1px;vertical-align:-1px;transform:scale(0);transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.demo.on .raw .cut{transform:scale(1)}
+.demo .why{font-family:var(--kai);font-size:16px;color:var(--muted);margin-top:10px;line-height:1.7}
+.demo .src{font-size:13px;color:var(--muted);margin-top:6px}
+.drill-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.drill-meta .src{font-size:14px;color:var(--muted)}
+.ddots{display:flex;gap:6px}
+.ddots i{width:22px;height:5px;border-radius:3px;background:var(--line)}
+.ddots i.y{background:var(--ok)}.ddots i.c{background:var(--ink)}
+.drill{display:grid;grid-template-columns:auto minmax(0,1fr);gap:32px;align-items:start}
+.hints{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.hints div{font-family:var(--kai);font-size:16px;line-height:1.6;background:#f7f3ea;border-left:3px solid var(--zhu);padding:8px 12px;border-radius:6px}
+.hints div.ok{border-color:var(--ok);color:var(--ok)}
+.rch.hint-pulse{animation:pulse 1.2s ease 2}
+@keyframes pulse{0%,100%{background:transparent}50%{background:var(--zhu-soft)}}
+.rch.opt::after{border-style:dotted!important;border-color:var(--muted)!important}
+@media (max-width:860px){.drill{grid-template-columns:minmax(0,1fr);gap:18px}.demo .raw{font-size:22px}}
+
+footer{background:var(--indigo);color:#9aa4bd;padding:44px 0;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+footer b{color:var(--paper)}
+
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:minmax(0,1fr);gap:44px}
+  .hero h1{font-size:46px}
+  .path{grid-template-columns:repeat(2,1fr)}
+  .stage{border-bottom:1px solid var(--line)}
+  .tools{grid-template-columns:minmax(0,1fr)}
+  .read-area{grid-template-columns:minmax(0,1fr)}
+  .nav{display:none}
+  .daily{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  .wrap{padding:0 18px}
+  .logo{white-space:nowrap;font-size:15px}.prog-mini .track{display:none}.bar .wrap{gap:12px}
+  .lesson-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.ltab{flex:none}
+  .path{grid-template-columns:repeat(2,minmax(0,1fr))}.stage{padding:18px 12px}
+  .cmp th,.cmp td{padding:8px 6px;font-size:14px}.cmp td.g{font-size:24px}
+  .opt{font-size:32px}.read-area{gap:24px}.vpage{justify-content:center}
+  .l-head{grid-template-columns:minmax(0,1fr);padding:24px}
+  .l-num{font-size:56px}
+  .l-modes,.l-body{padding-left:20px;padding-right:20px}
+  .col{font-size:21px;width:38px;height:330px}
+  .q-word{font-size:52px}
+  .sec-head h2{font-size:32px}
+  .vcol{font-size:22px;padding:0 5px}
+  .vpage{padding:12px}
+  .page{padding:18px 14px}
+  .stats{gap:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="logo"><span class="seal">正</span>正字 · 古籍繁體</div>
+    <nav class="nav" aria-label="主导航">
+      <a href="#path">学习路径</a><a href="#study">课程</a><a href="#tools">查字与错题</a>
+    </nav>
+    <div class="prog-mini"><span id="miniTxt">总进度 0%</span><div class="track"><div class="fill" id="miniFill"></div></div></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">从简体，走到一页古书</div>
+      <h1 class="tc">六周，读懂<br><em>一頁刻本</em>。</h1>
+      <p class="lead">你已经认识的简体字，就是最好的起点。这里按古籍通行的传承字形（康熙字典体）来教：先学偏旁规律，再攻克一简多繁，最后读懂竖排、加上句读。</p>
+      <div class="cta">
+        <button class="btn btn-zhu" id="ctaGo">开始第一课 →</button>
+        <a class="btn btn-ghost" href="#path" style="text-decoration:none">先看学习路径</a>
+      </div>
+      <div class="stats">
+        <div><b id="stItems">0</b>个字词可练</div>
+        <div><b>7</b>课 · 6 周</div>
+        <div><b>20</b>分钟 / 天</div>
+      </div>
+    </div>
+    <div class="page-wrap">
+      <div class="page" id="heroPage" aria-label="《論語·學而》刻本版式示意">
+        <div class="frame"><div class="frame-in" id="heroCols"></div></div>
+      </div>
+      <div class="page-ctl">
+        <button class="chip" id="tgDou" aria-pressed="false">加句读</button>
+        <button class="chip" id="tgLens" aria-pressed="false">标出繁体字</button>
+      </div>
+      <div class="page-cap">《論語·學而》首章。竖排，从右往左读。古书原本没有标点，读的人自己画圈断句，叫"句读"。</div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="path">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="sec-label">学习路径</div><h2 class="tc">七课，一条路走到底</h2></div>
+      <p>前一课是后一课的地基，请按顺序学。完成一课的标准是：练习里答对 80% 以上的字词。点任意一课可以直接进入。</p>
+    </div>
+    <div class="path" id="pathGrid"></div>
+    <div class="daily">
+      <div><b>每天 5 分钟 · 复习</b><span>打开"错题本"，把昨天错的字过一遍。</span></div>
+      <div><b>每天 10 分钟 · 新课</b><span>先读"讲解"，再看"字表"，最后做"练习"。</span></div>
+      <div><b>每天 5 分钟 · 泡读</b><span>在第六课读一段原典，点不认识的字查看。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="study">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="sec-label">课程</div><h2 class="tc">讲 · 表 · 练</h2></div>
+      <p>每课三步：讲解规律，查看字表，做练习。进度会自动保存在这台设备的浏览器里。</p>
+    </div>
+    <div class="lesson-tabs" role="tablist" id="ltabs"></div>
+    <div class="lesson" id="lesson"></div>
+  </div>
+</section>
+
+<section class="blk" id="tools">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="sec-label">工具</div><h2 class="tc">查字与错题本</h2></div>
+      <p>输入一个简体字或词，查它在古籍里怎么写。练习中答错的字，会自动收进错题本。</p>
+    </div>
+    <div class="tools">
+      <div class="panel">
+        <h3>查字</h3>
+        <div class="sub">只收录本站课程里的字词。查不到时，可以去汉典（zdic.net）查。</div>
+        <div class="lookup"><input id="lk" placeholder="输入简体，如：干、复、为、里" aria-label="输入简体字"></div>
+        <div class="lk-res" id="lkRes"></div>
+      </div>
+      <div class="panel">
+        <h3>错题本</h3>
+        <div class="sub">答对一次就会从这里移除。</div>
+        <div class="mist" id="mist"></div>
+        <div class="ctl-row"><button class="btn btn-ink" id="mistGo">练错题</button><button class="btn btn-line" id="resetAll">清空全部进度</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><b>正字</b> · 一个为简体读者准备的古籍繁体入门。</div>
+    <div>字形以《康熙字典》传承字形为准。正式出版或做字体设计前，请对照原书逐字确认。</div>
+  </div>
+</footer>
+
+<script>
+/* ================= DATA ================= */
+const RAD=[
+["讠","言","",["说說","语語","请請"],"与说话、言语有关"],
+["钅","金","",["钱錢","铁鐵","银銀"],"与金属有关"],
+["饣","飠","食",["饭飯","饿餓","馆館"],"与饮食有关"],
+["纟","糹","糸",["红紅","经經","绿綠"],"与丝线有关"],
+["门","門","",["问問","间間","闻聞"],"两扇门的样子"],
+["贝","貝","",["财財","贵貴","买買"],"古人用贝壳当钱"],
+["见","見","",["视視","觉覺","观觀"],"与看有关"],
+["马","馬","",["骑騎","妈媽","验驗"],"下面四点是马蹄"],
+["鸟","鳥","",["鸡鷄","鸭鴨","鸣鳴"],"下面四点是鸟爪"],
+["鱼","魚","",["鲜鮮","鲤鯉","鲸鯨"],"下面四点是鱼尾"],
+["车","車","",["转轉","轻輕","辆輛"],"车子的俯视形"],
+["页","頁","",["题題","顺順","颜顏"],"本义是头"],
+["风","風","",["飘飄","飓颶","飙飆"],"里面是一个「虫」"],
+["仑","侖","",["论論","轮輪","伦倫"],"表音的部件"],
+["仓","倉","",["枪槍","抢搶","苍蒼"],"表音的部件"],
+["尧","堯","",["烧燒","晓曉","绕繞"],"表音的部件"]];
+
+const MULTI=[
+["发",[["发展","發展","发出、发生 → 發"],["出发","出發","发出、发生 → 發"],["头发","頭髮","毛发 → 髮"],["理发","理髮","毛发 → 髮"]]],
+["后",[["皇后","皇后","君主之妻 → 后"],["以后","以後","前后、之后 → 後"],["后面","後面","前后、之后 → 後"]]],
+["干",[["干涉","干涉","冒犯、关涉 → 干"],["若干","若干","冒犯、关涉 → 干"],["干净","乾淨","干燥 → 乾"],["饼干","餅乾","干燥 → 乾"],["干活","幹活","做事、主干 → 幹"],["干部","幹部","做事、主干 → 幹"]]],
+["里",[["公里","公里","长度单位、乡里 → 里"],["故里","故里","长度单位、乡里 → 里"],["里面","裏面","内部 → 裏（「裡」是后起写法）"],["这里","這裏","内部 → 裏"]]],
+["面",[["见面","見面","脸、表面 → 面"],["面条","麵條","面粉 → 麵"],["面包","麵包","面粉 → 麵"]]],
+["台",[["舞台","舞臺","高台 → 臺"],["台阶","臺階","高台 → 臺"],["柜台","櫃檯","桌案 → 檯"],["台风","颱風","风暴 → 颱（近代字，古籍里没有）"]]],
+["复",[["恢复","恢復","返回、再次 → 復"],["复兴","復興","返回、再次 → 復"],["复杂","複雜","重叠、繁多 → 複"],["重复","重複","重叠、繁多 → 複"],["答复","答覆","回答、覆盖 → 覆"],["反复","反覆","翻来覆去 → 覆"]]],
+["历",[["历史","歷史","经历 → 歷"],["经历","經歷","经历 → 歷"],["日历","日曆","历法 → 曆"],["农历","農曆","历法 → 曆"]]],
+["只",[["只有","只有","仅仅 → 只"],["一只","一隻","单个、量词 → 隻"],["只身","隻身","单个 → 隻"]]],
+["系",[["系统","系統","体系 → 系"],["关系","關係","关联 → 係"],["联系","聯繫","捆绑、连结 → 繫"],["系马","繫馬","捆绑、连结 → 繫"]]],
+["余",[["余（姓）","余","姓氏；古文「我」 → 余"],["多余","多餘","剩下 → 餘"],["其余","其餘","剩下 → 餘"]]],
+["准",[["批准","批准","允许 → 准"],["标准","標準","准则、准确 → 準"],["准备","準備","准则、准确 → 準"]]],
+["钟",[["时钟","時鐘","钟、乐器 → 鐘"],["钟情","鍾情","专注、酒器 → 鍾"]]],
+["松",[["松树","松樹","树名 → 松"],["放松","放鬆","不紧 → 鬆"]]],
+["云",[["子曰诗云","子曰詩云","说 → 云"],["白云","白雲","天上的云 → 雲"]]],
+["冲",[["冲茶","沖茶","用水冲 → 沖"],["冲突","衝突","碰撞、闯 → 衝"],["要冲","要衝","交通要道 → 衝"]]],
+["范",[["范（姓）","范","姓氏 → 范"],["模范","模範","模子、界限 → 範"],["范围","範圍","模子、界限 → 範"]]],
+["丑",[["子丑寅卯","子丑寅卯","地支 → 丑"],["丑陋","醜陋","难看 → 醜"]]],
+["斗",[["北斗","北斗","量器、星名 → 斗"],["战斗","戰鬥","争斗 → 鬥"]]],
+["获",[["获得","獲得","得到 → 獲"],["收获","收穫","收割庄稼 → 穫"]]],
+["制",[["制度","制度","规定、限制 → 制"],["制造","製造","制作 → 製"]]],
+["征",[["征伐","征伐","出征、征收 → 征"],["象征","象徵","迹象、征召 → 徵"]]],
+["尽",[["尽力","盡力","完、全部 → 盡"],["尽管","儘管","尽量 → 儘"]]],
+["游",[["游泳","游泳","在水中 → 游"],["游览","遊覽","在陆上 → 遊"]]],
+["表",[["表示","表示","外面、显示 → 表"],["手表","手錶","计时器 → 錶"]]],
+["致",[["一致","一致","给予、达到 → 致"],["细致","細緻","精密 → 緻"]]],
+["板",[["木板","木板","板材 → 板"],["老板","老闆","老板 → 闆（近代俗字）"]]],
+["着",[["着急","著急","古籍多写「著」"],["看着","看著","古籍多写「著」"]]]];
+
+const INH=[ // 简, 今台湾标准, 古籍传承, 说明, 例
+["为","為","爲","上面是「爪」","行爲　以爲"],
+["伪","偽","僞","右边跟「爲」","虛僞　僞造"],
+["真","真","眞","上面是「匕」","眞理　天眞"],
+["慎","慎","愼","右边跟「眞」","謹愼　愼獨"],
+["镇","鎮","鎭","右边跟「眞」","城鎭　鎭定"],
+["青","青","靑","下面是「円」形","靑山　靑年"],
+["清","清","淸","右边跟「靑」","淸水　淸明"],
+["卫","衛","衞","古籍多用此形","衞國　護衞"],
+["产","產","産","上面是「文」","生産　物産"],
+["即","即","卽","左边是「皀」","卽日　立卽"],
+["既","既","旣","左边是「皀」","旣然　旣往"],
+["概","概","槪","右边跟「旣」","大槪　氣槪"],
+["乡","鄉","鄕","中间是「皀」","故鄕　鄕里"],
+["尚","尚","尙","上面是「八」","高尙　尙書"],
+["教","教","敎","左下是「子」，右为「攵」","敎化　宗敎"]];
+
+const VAR=[ // 古籍常见写法(们), 简体, 说明
+[["峯","峰"],"峰","山字可在上，也可在左"],
+[["羣","群"],"群","「羊」可在下，也可在右"],
+[["牀","床"],"床","「牀」是古写"],
+[["鷄","雞"],"鸡","「鳥」「隹」都表示鸟"],
+[["歎","嘆"],"叹","「欠」「口」都与出气有关"],
+[["綫","線"],"线","「戔」「泉」都表音"],
+[["衆","眾"],"众","「衆」是刻本常见写法"],
+[["迹","跡","蹟"],"迹","三形古籍都会出现"],
+[["烟","煙"],"烟","「因」「垔」都表音"],
+[["略","畧"],"略","部件左右、上下互换"],
+[["秘","祕"],"秘","「祕」是古写，从「示」"],
+[["盃","杯"],"杯","「盃」从「皿」"],
+[["凉","涼"],"凉","两点水、三点水通用"],
+[["窗","窻","牕"],"窗","刻本里写法很多"],
+[["冰","氷"],"冰","「氷」是异写"],
+[["卻","却"],"却","「卻」是正字"]];
+
+const TONG=[["說","悅","不亦說乎","《論語·學而》"],["女","汝","誨女知之乎","《論語·爲政》"],["知","智","是知也","《論語·爲政》"],["罔","惘","學而不思則罔","《論語·爲政》"]];
+
+const PASS=[
+{id:"xueer",title:"論語 · 學而",src:"《論語·學而》第一章",
+ text:"子曰：學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？",
+ tr:"孔子说：学了又时常温习，不也很愉快吗？有朋友从远方来，不也很快乐吗？别人不了解我，我却不恼怒，不也是君子吗？"},
+{id:"dao",title:"道德經 · 一章",src:"《道德經》第一章（節選）",
+ text:"道可道，非常道；名可名，非常名。無名，天地之始；有名，萬物之母。",
+ tr:"可以说出来的道，就不是恒常的道；可以叫出来的名，就不是恒常的名。无名，是天地的开端；有名，是万物的根源。"},
+{id:"daxue",title:"大學 · 首章",src:"《大學》首章（節選）",
+ text:"大學之道，在明明德，在親民，在止於至善。知止而後有定，定而後能靜，靜而後能安，安而後能慮，慮而後能得。",
+ tr:"大学的宗旨，在于彰明光明的德行，在于亲近、革新民众，在于达到最完善的境界。知道目标才能志向坚定，志向坚定才能心静，心静才能安稳，安稳才能思虑周详，思虑周详才能有所收获。"},
+{id:"shishuo",title:"師說",src:"韓愈《師說》（節選）",
+ text:"古之學者必有師。師者，所以傳道受業解惑也。人非生而知之者，孰能無惑？惑而不從師，其爲惑也，終不解矣。",
+ tr:"古代求学的人一定有老师。老师，是用来传授道理、教授学业、解答疑惑的。人不是生下来就懂道理的，谁能没有疑惑？有疑惑却不跟老师学，那些疑惑就始终解不开了。"}];
+
+const T2S={"學":"学","時":"时","習":"习","說":"说（此处通「悦」，读 yuè）","遠":"远","來":"来","樂":"乐（读 lè）","慍":"愠（恼怒）","無":"无","萬":"万","親":"亲（一说通「新」）","於":"于","後":"后","靜":"静","慮":"虑","師":"师","傳":"传","業":"业","孰":"孰（谁）","從":"从","爲":"为（传承字形，台湾作「為」）","終":"终","解":"解","矣":"矣（句末语气词）","論":"论","語":"语","經":"经","德":"德","道":"道","乎":"乎（语气词，表疑问）","亦":"亦（也）","慍":"愠（恼怒）","惑":"惑（疑惑）","朋":"朋（同门为朋）","受":"受（通「授」，传授）"};
+
+/* ================= STATE ================= */
+const KEY="zhengzi-v1";
+let S={m:{},miss:{},read:{},intro:false,rg:{},jg:{}};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ================= ITEMS per lesson ================= */
+const items={1:[],2:[],3:[],4:[]};
+RAD.forEach(([s,t,alt,ex])=>{ex.forEach(e=>items[1].push({id:"r:"+e,q:e[0],a:e[1],hint:"偏旁 "+s+" → "+t,kind:"s2t"}))});
+MULTI.forEach(([ch,ws])=>{const forms=[];ws.forEach(([sw,tw])=>{const i=sw.indexOf(ch);const f=tw[i];if(f&&!forms.includes(f))forms.push(f)});
+  ws.forEach(([sw,tw,nt])=>{const i=sw.indexOf(ch);items[2].push({id:"m:"+sw,q:sw,qi:i,a:tw[i],full:tw,opts:forms,hint:"「"+ch+"」有 "+forms.length+" 个繁体："+forms.join(" / "),note:nt,kind:"multi"})})});
+INH.forEach(([s,tw,cl,nt,ex])=>items[3].push({id:"i:"+s,q:tw,a:cl,hint:"今台湾标准写作「"+tw+"」，古籍怎么写？",note:nt+"。例："+ex,kind:"inh",simp:s}));
+VAR.forEach(([fs,s,nt])=>fs.forEach(f=>items[4].push({id:"v:"+f,q:f,a:s,hint:"这个古籍写法，对应哪个简体？",note:"「"+fs.join("」「")+"」都对应简体「"+s+"」。"+nt,kind:"var",qtc:true})));
+const allItems=[].concat(items[1],items[2],items[3],items[4]);
+const byId=Object.fromEntries(allItems.map(x=>[x.id,x]));
+document.getElementById("stItems").textContent=allItems.length;
+
+/* ================= LESSONS ================= */
+const LES=[
+{n:"零",wk:"第 1 周 · 前两天",name:"认识古籍繁体",ds:"古籍、台湾、香港的繁体有什么不同",goal:"弄清楚要学的是哪一种繁体，以及学习的顺序。"},
+{n:"一",wk:"第 1 周",name:"偏旁类推",ds:"5 组 · 16 个偏旁，逐组过关",goal:"分 5 组学完 16 个偏旁，每组过关后解锁下一组。"},
+{n:"二",wk:"第 2–3 周",name:"一简对多繁",ds:"28 个字，"+items[2].length+" 个词",goal:"按意思选对繁体：干净是「乾」，干活是「幹」。"},
+{n:"三",wk:"第 3 周",name:"传承字形",ds:"爲、眞、靑…… 15 组",goal:"认出古籍刻本里的旧字形，不被「爲」「眞」卡住。"},
+{n:"四",wk:"第 4 周",name:"异体与通假",ds:"16 组异体，4 个通假",goal:"同一个字的不同写法，认得就行；通假字要知道读什么。"},
+{n:"五",wk:"第 5 周",name:"竖排与句读",ds:"6 关句读训练，逐关解锁",goal:"认识刻本版式，学会 5 种断句线索，能给没有标点的原文断句。"},
+{n:"六",wk:"第 6 周",name:"原典精读",ds:"論語、道德經、大學、師說",goal:"用前五课学到的字，读通四段原典。"}];
+
+function lessonPct(i){
+  if(i===0)return S.intro?100:0;
+  if(i===1){const p=GROUPS.filter((_,g)=>S.rg&&S.rg[g]&&S.rg[g].pass).length;return Math.round(p/GROUPS.length*100)}
+  if(i>=1&&i<=4){const it=items[i];return Math.round(it.filter(x=>S.m[x.id]).length/it.length*100)}
+  if(i===5){const p=JLV.filter((_,g)=>S.jg&&S.jg[g]&&S.jg[g].pass).length;return Math.round(p/JLV.length*100)}
+  if(i===6){const d=PASS.filter(p=>S.read["rd:"+p.id]).length;return Math.round(d/PASS.length*100)}
+}
+const isDone=i=>i===0?S.intro:lessonPct(i)>=(i>=5||i===1?100:80);
+
+/* ================= HERO PAGE ================= */
+(function(){
+  const cols=["子曰學而時習之不","亦說乎有朋自遠方","來不亦樂乎人不知","而不慍不亦君子乎"];
+  const dou={"曰":1,"之":2,"乎":0,"方":0,"來":0,"知":0,"慍":0};
+  // break after: 曰 之 乎(1st) 方 樂乎 知 慍 乎
+  const breakIdx=new Set([1,6,10,15,20,23,26,31]); // global index positions after which a break
+  const old=new Set(["學","時","習","說","遠","來","樂","慍"]);
+  const host=document.getElementById("heroCols");
+  let g=0,dly=1;
+  const bx=document.createElement("div");bx.className="col banxin";
+  bx.innerHTML='<div class="yuwei"></div><span>論語 卷一</span><span>學而</span><div class="yuwei down"></div>';
+  host.appendChild(bx);
+  cols.forEach(c=>{const d=document.createElement("div");d.className="col";
+    [...c].forEach(ch=>{const sp=document.createElement("span");sp.className="ch"+(old.has(ch)?" old":"");
+      if(breakIdx.has(g)){sp.classList.add("dou","d"+Math.min(dly++,7))}
+      sp.textContent=ch;d.appendChild(sp);g++});host.appendChild(d)});
+  // put banxin on the left side (end): move to end -> since row-reverse, first child is rightmost; banxin should be leftmost
+  host.appendChild(bx);
+  const pg=document.getElementById("heroPage");
+  const t1=document.getElementById("tgDou"),t2=document.getElementById("tgLens");
+  t1.onclick=()=>{const on=pg.classList.toggle("marked");t1.setAttribute("aria-pressed",on)};
+  t2.onclick=()=>{const on=pg.classList.toggle("lens");t2.setAttribute("aria-pressed",on)};
+  setTimeout(()=>{pg.classList.add("marked");t1.setAttribute("aria-pressed","true")},900);
+})();
+
+/* ================= PATH ================= */
+function renderPath(){
+  const g=document.getElementById("pathGrid");g.innerHTML="";
+  LES.forEach((l,i)=>{const p=lessonPct(i);const b=document.createElement("button");
+    b.className="stage"+(isDone(i)?" done":"");
+    b.innerHTML=`<span class="wk">${l.wk}</span><span class="big tc">${l.n}</span><span class="nm">${l.name}</span><span class="ds">${l.ds}</span><span class="bar2"><i style="width:${p}%"></i></span><span class="pct">${p}%</span>`;
+    b.onclick=()=>{openLesson(i);document.getElementById("study").scrollIntoView()};g.appendChild(b)});
+  const tot=Math.round(LES.reduce((a,_,i)=>a+lessonPct(i),0)/LES.length);
+  document.getElementById("miniTxt").textContent="总进度 "+tot+"%";
+  document.getElementById("miniFill").style.width=tot+"%";
+  document.querySelectorAll(".ltab").forEach((t,i)=>t.classList.toggle("done",isDone(i)));
+}
+
+/* ================= LESSON SHELL ================= */
+let cur=0,curMode=0;
+const tabs=document.getElementById("ltabs");
+LES.forEach((l,i)=>{const t=document.createElement("button");t.className="ltab";t.setAttribute("role","tab");
+  t.innerHTML=`<span class="n">${l.n}</span>${l.name}<span class="ok"></span>`;t.onclick=()=>openLesson(i);tabs.appendChild(t)});
+
+const MODES={0:["讲解"],1:["分步学习","字表","总复习"],2:["讲解","字表","练习"],3:["讲解","字表","练习"],4:["讲解","字表","练习"],5:["讲解","分关训练","自由练习"],6:["精读"]};
+
+function ring(p){const r=36,c=2*Math.PI*r;return `<div class="ring"><svg width="84" height="84"><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--paper2)" stroke-width="6"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--zhu)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}"/></svg><span>${p}%</span></div>`}
+
+function openLesson(i,mode=0){
+  cur=i;curMode=mode;
+  document.querySelectorAll(".ltab").forEach((t,k)=>t.setAttribute("aria-selected",k===i));
+  const l=LES[i];const el=document.getElementById("lesson");
+  el.innerHTML=`<div class="l-head"><div class="l-num">${l.n}</div><div><h3>第${l.n}课 · ${l.name}</h3><div class="goal">${l.goal}</div></div>${ring(lessonPct(i))}</div>
+  <div class="l-modes" role="tablist">${MODES[i].map((m,k)=>`<button class="mode" role="tab" aria-selected="${k===mode}" data-k="${k}">${m}</button>`).join("")}</div>
+  <div class="l-body" id="lbody"></div>`;
+  el.querySelectorAll(".mode").forEach(b=>b.onclick=()=>openLesson(i,+b.dataset.k));
+  renderBody();
+}
+function refreshRing(){const r=document.querySelector("#lesson .ring");if(r)r.outerHTML=ring(lessonPct(cur));renderPath()}
+
+function renderBody(){
+  const b=document.getElementById("lbody");const i=cur,m=curMode;
+  if(i===0)return b.innerHTML=introHTML(),bindIntro();
+  if(i===5)return m===0?(b.innerHTML=judouIntro()):m===1?jdModule(b):judouPractice(b);
+  if(i===6)return reading(b);
+  if(i===1&&m===0)return stepModule(b);
+  if(m===0)b.innerHTML=[null,l1,l2,l3,l4][i]()+`<div class="ctl-row"><button class="btn btn-zhu" onclick="openLesson(${i},2)">去练习 →</button><button class="btn btn-line" onclick="openLesson(${i},1)">先看字表</button></div>`;
+  else if(m===1)b.innerHTML=table(i);
+  else quiz(b,items[i],i);
+}
+
+/* ----- lesson texts ----- */
+function introHTML(){return `<div class="prose">
+<p>"繁体字"其实不止一种。我们说的繁体，大致有三套标准：</p>
+<div class="tbl-wrap"><table class="cmp"><tr><th>简体</th><th>古籍传承字形</th><th>今台湾标准</th><th>差别</th></tr>
+<tr><td>为</td><td class="g r">爲</td><td class="g">為</td><td>上面是"爪"还是四点</td></tr>
+<tr><td>真</td><td class="g r">眞</td><td class="g">真</td><td>上面多一个"匕"</td></tr>
+<tr><td>青</td><td class="g r">靑</td><td class="g">青</td><td>下半部写法不同</td></tr>
+<tr><td>里（里面）</td><td class="g r">裏</td><td class="g">裡</td><td>"裡"是后来的写法</td></tr></table></div>
+<p>古籍刻本大多按《康熙字典》的字形刻印，这就是"传承字形"。台湾、香港在上世纪七八十年代各自制定了标准字形，改掉了其中一部分。<b>本站教的是古籍传承字形</b>，只在需要时把台湾写法列出来对照。</p>
+<div class="pi">好消息：两者九成以上一模一样。你要学的是那一成的差别，外加简繁之间的规律。</div>
+<h4>为什么按这个顺序学</h4>
+<p><b>第一课</b>先学偏旁规律，学一个偏旁就能认出一批字。<b>第二课</b>攻最容易出错的一简对多繁。<b>第三、四课</b>学古籍特有的字形和异体。<b>第五、六课</b>回到书页，学竖排、断句，读原典。</p>
+<h4>开始前准备一件事</h4>
+<p>本站用 Noto Serif TC 显示繁体字。如果你想在自己的电脑上排古籍风格的文字，可以安装免费的「一點明體」（I.Ming），它专门按传承字形设计。</p>
+</div><div class="ctl-row"><button class="btn btn-zhu" id="introDone">${S.intro?"已读完 · 去第一课 →":"我读完了，去第一课 →"}</button></div>`}
+function bindIntro(){document.getElementById("introDone").onclick=()=>{S.intro=true;save();renderPath();openLesson(1)}}
+
+const l1=()=>`<div class="prose"><p>简化字很多是<b>成批</b>简化的：把一个偏旁改了，含这个偏旁的字就都改了。反过来，记住一个偏旁的繁体，就能还原一整类字。</p>
+<div class="pi">口诀：言金食糸门贝见，马鸟鱼车页风连。四点马蹄鸟爪鱼尾，记住形状不会乱。</div>
+<p>注意两个细节：<b>饣、纟作左偏旁时写作「飠」「糹」</b>，单独成字才写作「食」「糸」。另外，<b>仑、仓、尧</b>这类不是意义偏旁，而是表音的部件，也一样可以类推，比如论→論、轮→輪。</p>
+<p>字表里一共有 16 个偏旁、48 个例字，总复习时会随机抽题。</p></div>`;
+const l2=()=>`<div class="prose"><p>简化的时候，有些意思不同的字被合并成了同一个简体字。还原成繁体时，<b>必须先看意思</b>。这也是转换软件最容易出错的地方。</p>
+<div class="pi">方法：不要孤立地记字，要连同词组一起记。"干净"的干和"干活"的干，在古人眼里根本是两个字。</div>
+<p>练习时会给出一个词，并标出要转换的字，你从几个候选繁体里选出正确的一个。答完会显示这样选的依据。</p>
+<p>其中有几个字古籍里没有，比如「颱」，是近代才造的字。读古籍时可以跳过，不过写现代繁体时还是会用到。</p></div>`;
+const l3=()=>`<div class="prose"><p>这一课专门讲古籍和今天台湾标准<b>不一样</b>的地方。台湾在 1982 年公布了《常用國字標準字體表》，对一部分字形做了调整。古籍刻本则保留了旧写法。</p>
+<div class="tbl-wrap"><table class="cmp"><tr><th>规律</th><th>古籍</th><th>今台湾</th><th>同类</th></tr>
+<tr><td>爪字头</td><td class="g r">爲</td><td class="g">為</td><td class="tc">僞</td></tr>
+<tr><td>上面带"匕"</td><td class="g r">眞</td><td class="g">真</td><td class="tc">愼 鎭</td></tr>
+<tr><td>"円"形底</td><td class="g r">靑</td><td class="g">青</td><td class="tc">淸</td></tr>
+<tr><td>"皀"旁</td><td class="g r">卽</td><td class="g">即</td><td class="tc">旣 槪 鄕</td></tr></table></div>
+<div class="pi">记住一个字，同一个部件的字就都会了。练习时给你今天的写法，请选出古籍里的写法。</div></div>`;
+const l4=()=>`<div class="prose"><p><b>异体字</b>：同一个字有几种写法，意思和读音完全相同，比如「峯」和「峰」。古籍刻本里常见，<b>认得就够了</b>，不用都会写。</p>
+<p><b>通假字</b>：古人借用一个读音相同或相近的字来代替本字，不能按字面意思理解：</p>
+<div class="tbl-wrap"><table class="cmp"><tr><th>原文用字</th><th>相当于</th><th>出处</th></tr>
+${TONG.map(t=>`<tr><td class="g r">${t[0]}</td><td class="g">${t[1]}</td><td><span class="tc">${t[2]}</span>　${t[3]}</td></tr>`).join("")}</table></div>
+<div class="pi">读古书遇到读不通的字，先想想它是不是通假字。</div>
+<p>练习时给你一个古籍写法，请选出它对应的简体字。</p></div>`;
+
+function table(i){
+  if(i===1)return `<div class="grid-cards">${RAD.map(([s,t,alt,ex,nt])=>{const m=ex.every(e=>S.m["r:"+e]);return `<div class="card${m?" m":""}"><div class="pair"><span class="s">${s}</span><span class="arr">→</span><span class="t tc">${t}${alt?`<small>（单字 ${alt}）</small>`:""}</span></div><div class="nt">${nt}</div><div class="ex tc">${ex.map(e=>e[1]).join("　")}</div></div>`}).join("")}</div>`;
+  if(i===2)return `<div class="word-list">${MULTI.map(([ch,ws])=>`<div class="wl-row"><div class="big">${ch}<small>简体</small></div><div class="wl-items">${ws.map(([sw,tw,nt])=>{const k=sw.indexOf(ch);return `<span><b class="tc">${tw.slice(0,k)}<span class="hl">${tw[k]}</span>${tw.slice(k+1)}</b>${sw} · ${nt.split("→")[0].trim()}</span>`}).join("")}</div></div>`).join("")}</div>`;
+  if(i===3)return `<div class="grid-cards">${INH.map(([s,tw,cl,nt,ex])=>`<div class="card${S.m["i:"+s]?" m":""}"><div class="pair"><span class="s">${s}</span><span class="arr">→</span><span class="t tc" style="color:var(--zhu)">${cl}</span><span class="s tc" style="font-size:24px">今作 ${tw}</span></div><div class="nt">${nt}</div><div class="ex tc">${ex}</div></div>`).join("")}</div>`;
+  if(i===4)return `<div class="grid-cards">${VAR.map(([fs,s,nt])=>`<div class="card${fs.every(f=>S.m["v:"+f])?" m":""}"><div class="pair"><span class="t tc">${fs.join(" ")}</span><span class="arr">→</span><span class="s">${s}</span></div><div class="nt">${nt}</div></div>`).join("")}</div>`;
+}
+
+/* ----- quiz engine ----- */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function optionsFor(it,pool){
+  if(it.kind==="multi")return shuffle(it.opts.length>1?it.opts:[it.a]);
+  let ds=[];
+  if(it.kind==="inh"){ds=[it.q];}
+  const others=shuffle(pool.filter(x=>x.a!==it.a&&x.kind===it.kind).map(x=>x.a));
+  for(const o of others){if(ds.length>=3)break;if(!ds.includes(o)&&o!==it.a)ds.push(o)}
+  return shuffle([it.a,...ds.filter(d=>d!==it.a).slice(0,3)]);
+}
+function quiz(host,pool,lessonIdx,isMist){
+  // prefer unmastered
+  const un=shuffle(pool.filter(x=>!S.m[x.id])),ma=shuffle(pool.filter(x=>S.m[x.id]));
+  const set=un.concat(ma).slice(0,Math.min(10,pool.length));
+  if(!set.length){host.innerHTML=`<p class="empty">错题本是空的，暂时没有要练的题。</p>`;return}
+  let k=0,res=[];
+  const draw=()=>{
+    if(k>=set.length){const good=res.filter(Boolean).length;
+      host.innerHTML=`<div class="quiz q-end"><div class="score">${good}/${set.length}</div><p style="margin:12px 0 4px">${good===set.length?"全对。":"答错的字已收进错题本。"}</p><p class="q-hint">${lessonIdx?"本课进度 "+lessonPct(lessonIdx)+"%"+(isDone(lessonIdx)?"，这一课完成了。":"，达到 80% 就算完成。"):""}</p><div class="ctl-row" style="justify-content:center"><button class="btn btn-zhu" id="again">再练一轮</button>${lessonIdx&&isDone(lessonIdx)&&lessonIdx<6?`<button class="btn btn-line" id="next">去第${LES[lessonIdx+1].n}课 →</button>`:""}</div></div>`;
+      host.querySelector("#again").onclick=()=>quiz(host,isMist?pool.filter(x=>S.miss[x.id]):pool,lessonIdx,isMist);
+      const nx=host.querySelector("#next");if(nx)nx.onclick=()=>openLesson(lessonIdx+1);
+      if(isMist)renderMist();return}
+    const it=set[k];const opts=optionsFor(it,allItems);
+    let word=it.q;if(it.kind==="multi"){word=it.q.slice(0,it.qi)+`<span class="hl">${it.q[it.qi]}</span>`+it.q.slice(it.qi+1)}
+    const prompt={s2t:"这个字的繁体怎么写？",multi:"标红的字，该用哪个繁体？",inh:"古籍里写作？",var:"对应哪个简体？"}[it.kind];
+    host.innerHTML=`<div class="quiz"><div class="q-meta"><span>第 ${k+1} / ${set.length} 题</span><span class="q-dots">${set.map((_,j)=>`<i class="${j<k?(res[j]?"y":"n"):j===k?"c":""}"></i>`).join("")}</span></div>
+      <div class="q-prompt">${prompt}</div><div class="q-word ${it.kind==="inh"||it.kind==="var"?"tc":""}">${word}</div><div class="q-hint">${it.kind==="multi"?"":it.hint}</div>
+      <div class="opts">${opts.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join("")}</div>
+      <div class="q-fb" id="fb"></div><button class="btn btn-ink" id="nextQ" style="visibility:hidden">下一题 →</button></div>`;
+    host.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.o===it.a;res[k]=ok;
+      host.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.dataset.o===it.a)x.classList.add("right")});
+      if(!ok)b.classList.add("wrong");
+      if(ok){S.m[it.id]=1;delete S.miss[it.id]}else{S.miss[it.id]=1}
+      save();
+      const fb=host.querySelector("#fb");fb.className="q-fb "+(ok?"good":"bad");
+      const full=it.kind==="multi"?`<span class="tc">${it.full}</span>　`:"";
+      fb.innerHTML=(ok?"对。":"应为「"+it.a+"」。")+" "+full+(it.note||it.hint);
+      const n=host.querySelector("#nextQ");n.style.visibility="visible";n.focus();
+      n.onclick=()=>{k++;draw()};
+      if(lessonIdx)refreshRing();else renderPath();
+    });
+  };draw();
+}
+
+/* ----- lesson 5 ----- */
+const judouIntro=()=>`<div class="prose">
+<p>古书的版式有一套固定的名称，认识它们，翻开影印本就不会无从下手：</p>
+<div class="tbl-wrap"><table class="cmp"><tr><th>名称</th><th>是什么</th></tr>
+<tr><td><b>竖排右起</b></td><td>字从上往下写，行从右往左排。</td></tr>
+<tr><td><b>界栏</b></td><td>行与行之间的竖线。黑线叫"乌丝栏"，红线叫"朱丝栏"。</td></tr>
+<tr><td><b>版心</b></td><td>一页纸正中间的窄条，印着书名、卷数、页码。线装书沿版心对折。</td></tr>
+<tr><td><b>鱼尾</b></td><td>版心里形似鱼尾的黑色标记，方便对折时对齐。</td></tr>
+<tr><td><b>天头 / 地脚</b></td><td>版框上方和下方的空白，古人常在天头写批注。</td></tr></table></div>
+<h4>句读</h4>
+<p>古书原本没有标点。读的时候自己在字旁画圈，在一句话结束处画"句"，在句中需要停顿的地方点"读"。《禮記》里说"一年視離經辨志"，入学第一年就要学会断句。</p>
+<div class="pi">断句的线索：「曰」后面通常要断；「乎、也、矣、哉」多在句末；「者」常表示停顿；字数相同、结构对称的句子往往是并列关系。</div>
+<p>本站首页那页刻本，你可以点"加句读"看看效果。下一步进入"分关训练"：6 关，每关练一种线索。全部通过后，可以去"自由练习"断整段原典。</p></div>
+<div class="ctl-row"><button class="btn btn-zhu" onclick="openLesson(5,1)">开始分关训练 →</button></div>`;
+
+function strip(t){const chars=[],brk=new Set();for(const c of t){if(/[，。；：？！、]/.test(c)){if(chars.length)brk.add(chars.length-1)}else chars.push(c)}return {chars,brk}}
+function vcols(chars,per){const cols=[];for(let i=0;i<chars.length;i+=per)cols.push(chars.slice(i,i+per).map((c,j)=>({c,i:i+j})));return cols}
+
+let jdP=0;
+function judouPractice(host){
+  const p=PASS[jdP];const {chars,brk}=strip(p.text);const mine=new Set();
+  host.innerHTML=`<div class="passages">${PASS.map((x,k)=>`<button class="pchip" aria-pressed="${k===jdP}" data-k="${k}">${x.title}${S.read["jd:"+x.id]?" ✓":""}</button>`).join("")}</div>
+  <div class="read-area"><div class="vpage" id="vp"></div><div class="side"><h4 class="tc">${p.title}</h4><div class="src">${p.src} · 共 ${chars.length} 字</div>
+  <div class="prose"><p>点一个字，就在它后面加一个句读圈，再点一次取消。断完后点"核对"。</p></div>
+  <div class="ctl-row"><button class="btn btn-zhu" id="chk">核对</button><button class="btn btn-line" id="show">看答案</button><button class="btn btn-line" id="clr">清空</button></div>
+  <div class="jd-result" id="jr"></div></div></div>`;
+  host.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>{jdP=+b.dataset.k;judouPractice(host)});
+  const vp=host.querySelector("#vp");
+  vcols(chars,10).forEach(col=>{const d=document.createElement("div");d.className="vcol";col.forEach(({c,i})=>{const s=document.createElement("span");s.className="rch";s.textContent=c;s.dataset.i=i;s.tabIndex=0;
+    const tog=()=>{s.classList.remove("miss","extra");if(mine.has(i)){mine.delete(i);s.classList.remove("brk")}else{mine.add(i);s.classList.add("brk")}};
+    s.onclick=tog;s.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog()}};d.appendChild(s)});vp.appendChild(d)});
+  const spans=()=>vp.querySelectorAll(".rch");
+  host.querySelector("#chk").onclick=()=>{let hit=0,miss=0,extra=0;
+    spans().forEach(s=>{const i=+s.dataset.i;s.classList.remove("miss","extra");
+      if(brk.has(i)&&mine.has(i))hit++;else if(brk.has(i)){miss++;s.classList.add("miss")}else if(mine.has(i)){extra++;s.classList.add("extra")}});
+    const jr=host.querySelector("#jr");
+    if(!miss&&!extra){jr.style.color="var(--ok)";jr.textContent="全部断对，共 "+brk.size+" 处。";S.read["jd:"+p.id]=1;save();refreshRing()}
+    else{jr.style.color="var(--zhu)";jr.textContent=`断对 ${hit} 处，漏断 ${miss} 处（虚线圈），多断 ${extra} 处（灰色实心圈）。`}};
+  host.querySelector("#show").onclick=()=>{spans().forEach(s=>{const i=+s.dataset.i;s.classList.remove("miss","extra");s.classList.toggle("brk",brk.has(i));brk.has(i)?mine.add(i):mine.delete(i)});host.querySelector("#jr").textContent="这是参考断法。看熟后点「清空」，再自己断一遍。";host.querySelector("#jr").style.color="var(--muted)"};
+  host.querySelector("#clr").onclick=()=>judouPractice(host);
+}
+
+/* ----- lesson 6 ----- */
+let rdP=0;
+function reading(host){
+  const p=PASS[rdP];const {chars,brk}=strip(p.text);
+  host.innerHTML=`<div class="passages">${PASS.map((x,k)=>`<button class="pchip" aria-pressed="${k===rdP}" data-k="${k}">${x.title}${S.read["rd:"+x.id]?" ✓":""}</button>`).join("")}</div>
+  <div class="read-area"><div class="vpage" id="vp"></div><div class="side"><h4 class="tc">${p.title}</h4><div class="src">${p.src}　字旁带红线的，是和简体写法不同的字</div>
+  <div class="gloss" id="gl"><div class="empty">点原文里的任意一个字，这里会显示它的简体和注释。</div></div>
+  <div class="trans" id="tr" hidden><b>白话</b>${p.tr}</div>
+  <div class="ctl-row"><button class="btn btn-line" id="showTr">显示白话</button><button class="btn btn-zhu" id="done">${S.read["rd:"+p.id]?"已读完 ✓":"读完了"}</button></div></div></div>`;
+  host.querySelectorAll(".pchip").forEach(b=>b.onclick=()=>{rdP=+b.dataset.k;reading(host)});
+  const vp=host.querySelector("#vp"),gl=host.querySelector("#gl");
+  vcols(chars,10).forEach(col=>{const d=document.createElement("div");d.className="vcol";col.forEach(({c,i})=>{const s=document.createElement("span");s.className="rch brk-off"+(T2S[c]&&!T2S[c].startsWith(c)?" diff":"");if(brk.has(i))s.classList.add("brk");s.textContent=c;s.tabIndex=0;
+    const show=()=>{vp.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel"));s.classList.add("sel");
+      const v=T2S[c];const same=!v||v.startsWith(c);
+      gl.innerHTML=`<div class="gc tc">${c}</div><div class="gs">${same?"简繁写法相同":"简体："+v.split("（")[0]}</div>${v&&v.includes("（")?`<div class="gn">${v.slice(v.indexOf("（")+1,-1)}</div>`:""}`};
+    s.onclick=show;s.onkeydown=e=>{if(e.key==="Enter"){show()}};d.appendChild(s)});vp.appendChild(d)});
+  host.querySelector("#showTr").onclick=e=>{const t=host.querySelector("#tr");t.hidden=!t.hidden;e.target.textContent=t.hidden?"显示白话":"隐藏白话"};
+  host.querySelector("#done").onclick=()=>{S.read["rd:"+p.id]=1;save();refreshRing();if(rdP<PASS.length-1){rdP++;}reading(host)};
+}
+
+
+/* ================= 偏旁分步学习 ================= */
+const RTIP={"讠":"「言」七笔：一点、三横、一个口。作左旁时形状不变。","钅":"「金」作左旁时，最后一横改成提。","饣":"「食」作左旁写作「飠」，下部最后一笔改成提。","纟":"「糸」作左旁写作「糹」，下面是三个小点。","门":"左右两扇门，各带门框。","贝":"上面是「目」，下面两点。","见":"上面是「目」，下面是「儿」。","马":"上有三横，下面四点是马蹄。","鸟":"上部是鸟头，下面四点是鸟爪。","鱼":"上「⺈」、中「田」、下四点（鱼尾）。","车":"中间一个「日」形，一竖贯穿上下。","页":"上「一」、中「自」、下「八」。","风":"外面「几」，里面一撇加「虫」。","仑":"上「亼」，下「冊」。","仓":"上「亼」，下面像门户加「口」。","尧":"三个「土」叠在「兀」上。"};
+const REXT={"讠":["读","讀"],"钅":["锅","鍋"],"饣":["饱","飽"],"纟":["细","細"],"门":["闭","閉"],"贝":["货","貨"],"见":["规","規"],"马":["驾","駕"],"鸟":["鸽","鴿"],"鱼":["鲨","鯊"],"车":["较","較"],"页":["顶","頂"],"风":["飒","颯"],"仑":["纶","綸"],"仓":["疮","瘡"],"尧":["浇","澆"]};
+const GROUPS=[
+ {n:"一",t:"言语与器物",why:"四个都是作左旁的意义偏旁，最常见，先学它们。",r:["讠","钅","饣","纟"]},
+ {n:"二",t:"门户与财物",why:"这三个都由一个封闭的框架演变而来：门框、贝壳、眼睛。",r:["门","贝","见"]},
+ {n:"三",t:"四点动物",why:"马、鸟、鱼的繁体，下面都有四点，分别是蹄、爪、尾。放在一起学最好记。",r:["马","鸟","鱼"]},
+ {n:"四",t:"车页风",why:"简化时都大幅省略了笔画，要把中间的部件记回来。",r:["车","页","风"]},
+ {n:"五",t:"表音部件",why:"这三个不表示意思，而是表示读音。照样可以类推：论→論、轮→輪。",r:["仑","仓","尧"]}];
+const RADMAP=Object.fromEntries(RAD.map(x=>[x[0],x]));
+const STEPN=["认偏旁","看例字","小测验","过关"];
+if(!S.rg)S.rg={};
+const gState=g=>S.rg[g]||(S.rg[g]={step:0,pass:false,best:0,seen:{}});
+const gUnlocked=g=>g===0||(S.rg[g-1]&&S.rg[g-1].pass);
+let gCur=null;
+
+function stepModule(host){
+  if(gCur===null){gCur=GROUPS.findIndex((_,g)=>!gState(g).pass);if(gCur<0)gCur=0}
+  const g=gCur,G=GROUPS[g],st=gState(g);
+  host.innerHTML=`<details class="guide"><summary>这一课怎么学</summary><p>16 个偏旁分成 5 组，每组 4 步：<b>认偏旁</b>，看清笔画怎么变；<b>看例字</b>，点开每张卡对照；<b>小测验</b>，包括没学过的新字，考你能不能类推；测验答对 80% 就<b>过关</b>，解锁下一组。</p><p>注意：饣、纟作左旁时写作「飠」「糹」，单独成字才写「食」「糸」。</p><p class="kai" style="color:var(--zhu)">口诀：言金食糸门贝见，马鸟鱼车页风连。四点马蹄鸟爪鱼尾，记住形状不会乱。</p></details>
+  <div class="stepper"><nav class="grail" aria-label="偏旁分组"><div class="grail-h">五组偏旁</div>${GROUPS.map((x,k)=>{const sk=gState(k),un=gUnlocked(k);
+    return `<button class="gbtn${k===g?" on":""}${sk.pass?" pass":""}" data-g="${k}" ${un?"":"disabled"} aria-current="${k===g}"><span class="gn">${x.n}</span><span><span class="gt">${x.t}</span><br><span class="gr">${x.r.join(" ")}</span></span><span class="gs">${sk.pass?"過":un?STEPN[sk.step]:"未解锁"}</span></button>`}).join("")}</nav>
+  <div class="gmain" id="gmain"></div></div>`;
+  host.querySelectorAll(".gbtn").forEach(b=>b.onclick=()=>{gCur=+b.dataset.g;stepModule(host)});
+  const m=host.querySelector("#gmain");
+  const stepsBar=`<div class="steps">${STEPN.map((n,k)=>`${k?`<span class="st-line${k<=st.step?" past":""}"></span>`:""}<span class="st${k===st.step?" now":k<st.step?" past":""}"><i>${k+1}</i><span>${n}</span></span>`).join("")}</div>`;
+  const head=`${stepsBar}<div class="g-title">第${G.n}组 · ${G.t}</div><div class="g-why">${G.why}</div>`;
+  const go=k=>{st.step=k;save();stepModule(host);document.getElementById("lesson").scrollIntoView({block:"start"})};
+  if(st.step===0){
+    m.innerHTML=head+`<div class="radbig">${G.r.map(r=>{const [s,t,alt,ex,nt]=RADMAP[r];return `<div class="rb"><div class="rb-pair"><span class="rb-s">${s}</span><span class="rb-a">→</span><span class="rb-t tc">${t}</span>${alt?`<span class="rb-alt">单独成字<b>${alt}</b></span>`:""}</div><div class="rb-mean">${nt}</div><div class="rb-tip">${RTIP[r]}</div></div>`}).join("")}</div>
+    <div class="g-actions"><button class="btn btn-zhu" id="nx">记住了，看例字 →</button></div>`;
+    m.querySelector("#nx").onclick=()=>go(1);
+  }else if(st.step===1){
+    const cards=[];G.r.forEach(r=>RADMAP[r][3].forEach(e=>cards.push([r,e])));
+    m.innerHTML=head+`<div class="flipgrid">${cards.map(([r,e],k)=>{const T=RADMAP[r][1];return `<button class="flip${st.seen[e]?" open":""}" data-e="${e}"><span class="fs">${e[0]}</span><span class="fq">点开看繁体</span><span class="ft tc">${e[1]}</span><span class="fr">${r} → ${T}</span></button>`}).join("")}</div>
+    <div class="g-count" id="gc"></div>
+    <div class="g-actions"><button class="btn btn-line" id="bk">← 回看偏旁</button><button class="btn btn-zhu" id="nx">开始小测验 →</button><button class="btn btn-line" id="all">全部翻开</button></div>`;
+    const upd=()=>{const n=cards.filter(([_,e])=>st.seen[e]).length;m.querySelector("#gc").textContent=`已看 ${n} / ${cards.length} 张`+(n<cards.length?"。先在心里想好繁体怎么写，再点开对照。":"。都看过了，可以去测验。");m.querySelector("#nx").disabled=n<cards.length};
+    m.querySelectorAll(".flip").forEach(b=>b.onclick=()=>{b.classList.add("open");st.seen[b.dataset.e]=1;save();upd()});
+    m.querySelector("#all").onclick=()=>{cards.forEach(([_,e])=>st.seen[e]=1);save();m.querySelectorAll(".flip").forEach(b=>b.classList.add("open"));upd()};
+    m.querySelector("#bk").onclick=()=>go(0);m.querySelector("#nx").onclick=()=>go(2);upd();
+  }else if(st.step===2){
+    gQuiz(m,head,g,host);
+  }else{
+    passView(m,head,g,host,st.last||null);
+  }
+}
+
+function gQuiz(m,head,g,host){
+  const G=GROUPS[g],st=gState(g);
+  const qs=[];
+  G.r.forEach(r=>{const [s,t,alt,ex]=RADMAP[r];
+    shuffle(ex).slice(0,2).forEach(e=>qs.push({type:"char",r,q:e[0],a:e[1],id:"r:"+e}));
+    const x=REXT[r];qs.push({type:"rad",r,q:x[0],a:t,full:x[1]});});
+  const set=shuffle(qs);
+  const radPool=G.r.map(r=>RADMAP[r][1]);
+  const otherRad=shuffle(RAD.filter(x=>!G.r.includes(x[0])).map(x=>x[1]));
+  const charPool=shuffle(RAD.flatMap(x=>x[3].map(e=>e[1])));
+  let k=0;const res=[];
+  const draw=()=>{
+    if(k>=set.length){const good=res.filter(r=>r.ok).length,pct=Math.round(good/set.length*100);
+      st.best=Math.max(st.best||0,pct);st.last={good,total:set.length,pct,wrong:res.filter(r=>!r.ok).map(r=>r.show)};
+      if(pct>=80)st.pass=true;st.step=3;save();refreshRing();stepModule(host);return}
+    const q=set[k];let opts;
+    if(q.type==="rad"){opts=radPool.slice();while(opts.length<4)opts.push(otherRad.pop());opts=shuffle([...new Set(opts)]).slice(0,4);if(!opts.includes(q.a))opts[0]=q.a;opts=shuffle(opts)}
+    else{const ds=charPool.filter(c=>c!==q.a);opts=shuffle([q.a,...shuffle(ds).slice(0,3)])}
+    m.innerHTML=head+`<div class="quiz"><div class="q-meta"><span>第 ${k+1} / ${set.length} 题</span><span class="q-dots">${set.map((_,j)=>`<i class="${j<k?(res[j].ok?"y":"n"):j===k?"c":""}"></i>`).join("")}</span></div>
+      <span class="q-type">${q.type==="rad"?"类推 · 新字":"例字"}</span>
+      <div class="q-prompt">${q.type==="rad"?"这个字没学过。它的繁体用哪个偏旁？":"这个字的繁体怎么写？"}</div>
+      <div class="q-word">${q.q}</div>
+      <div class="opts">${opts.map(o=>`<button class="opt${q.type==="rad"?" rad":""}" data-o="${o}">${o}</button>`).join("")}</div>
+      <div class="q-fb" id="fb"></div><button class="btn btn-ink" id="nq" style="visibility:hidden">${k===set.length-1?"看结果 →":"下一题 →"}</button></div>`;
+    m.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.o===q.a;res[k]={ok,show:q.type==="rad"?q.full:q.a};
+      m.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.dataset.o===q.a)x.classList.add("right")});
+      if(!ok)b.classList.add("wrong");
+      if(q.id){if(ok){S.m[q.id]=1;delete S.miss[q.id]}else S.miss[q.id]=1;save()}
+      const fb=m.querySelector("#fb");fb.className="q-fb "+(ok?"good":"bad");
+      fb.innerHTML=q.type==="rad"?`${ok?"对，":"应为「"+q.a+"」。"}${q.q} 的繁体是 <b class="tc" style="font-size:24px">${q.full}</b>，规律：${q.r} → ${q.a}`:`${ok?"对。":"应为「"+q.a+"」。"}规律：${q.r} → ${RADMAP[q.r][1]}`;
+      const n=m.querySelector("#nq");n.style.visibility="visible";n.focus();n.onclick=()=>{k++;draw()};
+    });
+  };draw();
+}
+
+function passView(m,head,g,host,last){
+  const st=gState(g),G=GROUPS[g];const ok=st.pass&&(!last||last.pct>=80||st.pass);
+  const lastFail=last&&last.pct<80;
+  const nextG=g+1<GROUPS.length?g+1:null;
+  m.innerHTML=head+`<div class="pass-card">
+    <div class="pass-seal${lastFail&&!st.pass?" fail":""}">${lastFail&&!st.pass?"再<br>練":"過<br>關"}</div>
+    ${last?`<div class="pass-score">本次答对 ${last.good} / ${last.total}（${last.pct}%）${lastFail?(st.pass?"，之前已经过关。":"，需要 80% 才能过关。"):"。"}</div>`:""}
+    <div class="pass-recap">${G.r.map(r=>`<span>${r} → ${RADMAP[r][1]}</span>`).join("")}${last&&last.wrong.length?last.wrong.map(w=>`<span class="x">${w}</span>`).join(""):""}</div>
+    ${last&&last.wrong.length?`<div class="q-hint">红框是答错的字，已经收进错题本。</div>`:""}
+    <div class="g-actions" style="justify-content:center">
+      ${st.pass&&nextG!==null?`<button class="btn btn-zhu" id="ng">解锁第${GROUPS[nextG].n}组 · ${GROUPS[nextG].t} →</button>`:""}
+      ${st.pass&&nextG===null?`<button class="btn btn-zhu" id="nl">五组全部过关，去第二课 →</button>`:""}
+      <button class="btn ${st.pass?"btn-line":"btn-zhu"}" id="rt">${st.pass?"再测一次":"重新测验"}</button>
+      <button class="btn btn-line" id="rv">回看偏旁</button></div></div>`;
+  const ng=m.querySelector("#ng");if(ng)ng.onclick=()=>{gCur=nextG;stepModule(host)};
+  const nl=m.querySelector("#nl");if(nl)nl.onclick=()=>openLesson(2);
+  m.querySelector("#rt").onclick=()=>{st.step=2;save();stepModule(host)};
+  m.querySelector("#rv").onclick=()=>{st.step=0;save();stepModule(host)};
+}
+
+
+/* ================= 句读分关训练 ================= */
+// 文本中「·」表示可断可不断（不计对错）
+const JD_END="也矣乎哉焉耳歟邪耶夫";
+const JD_HEAD=["若夫","且夫","至於","是故","然則","嗟乎","嗚呼","蓋","夫","故","然","則","今"];
+const JD_SAY="曰云";
+const JD_GLUE="之而以於其所則與者";
+const JLV=[
+{n:"一",t:"句末虚词",clue:["也","矣","乎","哉","焉","耳"],
+ why:"这些字是句末的语气词，相当于今天的「啊、了、吗、呢」。看到它们，后面多半就该断开。",
+ demo:{raw:"寡人之於國也|盡心焉耳矣|",mark:"也焉耳矣",why:"「也」后断一次；「焉耳矣」三个语气词连用，一起收尾，中间不断。",src:"《孟子·梁惠王上》"},
+ drills:[["朝聞道，夕死可矣。","《論語·里仁》"],["三人行，必有我師焉。","《論語·述而》"],["知之爲知之，不知爲不知，是知也。","《論語·爲政》"],["逝者如斯夫！不舍晝夜。","《論語·子罕》"]]},
+{n:"二",t:"句首词与「曰」",clue:["曰","云","夫","蓋","嗟乎","是故"],
+ why:"「曰、云」后面是引语，要断。「夫、蓋、嗟乎、是故」这类词用在句子开头，它们<b>前面</b>要断开。",
+ demo:{raw:"嗟乎|燕雀安知鴻鵠之志哉|",mark:"嗟乎哉",why:"「嗟乎」是感叹，单独成句；「哉」是句末语气词，句子到这里结束。",src:"《史記·陳涉世家》"},
+ drills:[["子曰：吾十有五而志于學，三十而立，四十而不惑。","《論語·爲政》"],["孟子曰：魚，我所欲也；熊掌，亦我所欲也。","《孟子·告子上》"],["夫天地者，萬物之逆旅也；光陰者，百代之過客也。","李白《春夜宴從弟桃花園序》"],["蓋文王拘而演周易；仲尼厄而作春秋；屈原放逐，乃賦離騷。","司馬遷《報任安書》"]]},
+{n:"三",t:"对称与排比",clue:["字数相同","结构相同"],
+ why:"古文爱用对偶。如果几组字数相同、结构一样，它们往往是并列的几句。先数字数，再找对应的位置。",
+ demo:{raw:"學而不思則罔|思而不學則殆|",mark:"",why:"「學而不思」对「思而不學」，「則罔」对「則殆」，两句各六个字，从正中间断开。",src:"《論語·爲政》"},
+ drills:[["君子坦蕩蕩，小人長戚戚。","《論語·述而》"],["天時不如地利，地利不如人和。","《孟子·公孫丑下》"],["業精於勤，荒於嬉；行成於思，毀於隨。","韓愈《進學解》"],["先天下之憂而憂，後天下之樂而樂。","范仲淹《岳陽樓記》"]]},
+{n:"四",t:"「者……也」与名词",clue:["者","也","人名","地名"],
+ why:"「……者，……也」是古文最常见的判断句，相当于「……是……」。「者」后面稍停，「也」后面断开。人名、地名、官职是一个整体，不能拆开。",
+ demo:{raw:"陳勝者|陽城人也|字涉|",mark:"者也",why:"「陳勝者，陽城人也」意思是「陈胜是阳城人」。「字」引出他的表字，前面断开。",src:"《史記·陳涉世家》"},
+ drills:[["師者，所以傳道受業解惑也。","韓愈《師說》"],["廉頗者，趙之良將也。","《史記·廉頗藺相如列傳》"],["諸葛亮·字孔明，琅邪陽都人也。","《三國志·諸葛亮傳》"],["吳廣者，陽夏人也，字叔。","《史記·陳涉世家》"]]},
+{n:"五",t:"顶真与动词",clue:["重复的词","找动词"],
+ why:"同一个词在前一句末尾、后一句开头重复出现（顶真），中间就是断点。长句可以先找动词，弄清谁做了什么，一句话就完整了。",
+ demo:{raw:"知止而後有定|定而後能靜|靜而後能安|",mark:"",why:"「定」「靜」都是上一句的结尾、下一句的开头，在重复的两个字中间断开。",src:"《大學》"},
+ drills:[["物有本末，事有終始。知所先後，則近道矣。","《大學》"],["人非生而知之者，孰能無惑？","韓愈《師說》"],["古之欲明明德於天下者，先治其國；欲治其國者，先齊其家。","《大學》"],["靜而後能安，安而後能慮，慮而後能得。","《大學》"]]},
+{n:"六",t:"综合长段",clue:["全部线索"],
+ why:"毕业关：用前五关学到的所有线索，断一段完整的文章。先通读弄懂大意，再先断有把握的，最后处理难的。",
+ demo:{raw:"晉太元中|武陵人捕魚爲業|",mark:"",why:"「晉太元中」是时间，单独一句；「武陵人」是主语，「捕魚爲業」说他做什么。",src:"陶淵明《桃花源記》"},
+ drills:[["晉太元中，武陵人捕魚爲業。緣溪行，忘路之遠近。忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。","陶淵明《桃花源記》"],["慶曆四年春，滕子京謫守巴陵郡。越明年，政通人和，百廢具興。","范仲淹《岳陽樓記》"],["水陸草木之花，可愛者甚蕃。晉陶淵明獨愛菊。自李唐來，世人甚愛牡丹。","周敦頤《愛蓮說》"]]}
+];
+function jparse(t){const chars=[],brk=new Set(),opt=new Set();for(const c of t){if(/[，。；：？！、]/.test(c)){if(chars.length)brk.add(chars.length-1)}else if(c==="·"){if(chars.length)opt.add(chars.length-1)}else chars.push(c)}return {chars,brk,opt}}
+function jHint(chars,i,kind){
+  const c=chars[i],n=chars[i+1]||"",n2=n+(chars[i+2]||"");
+  if(kind==="miss"){
+    if(JD_END.includes(c))return `「${c}」是句末语气词，它后面要断开。`;
+    if(JD_SAY.includes(c))return `「${c}」后面是说的话，要断开。`;
+    const h=JD_HEAD.find(w=>n2.startsWith(w)||n===w);if(h)return `「${h}」常用在句子开头，它前面要断开。`;
+    if(c==="者")return `「${c}」表示停顿，「……者，……也」是判断句，这里要稍停。`;
+    if(chars.indexOf(n)>-1&&chars.slice(0,i+1).join("").endsWith(n))return `「${n}」在这里重复出现，是顶真：上一句到「${c}」结束。`;
+    return `「${c}」和「${n}」之间少断了一处。读一读，前半句的意思已经完整了。`;
+  }else{
+    if(JD_GLUE.includes(n))return `「${n}」把前后连在一起，「${c}${n}」中间一般不断。`;
+    if(JD_GLUE.includes(c))return `「${c}」后面还要接内容，这里断开意思就不完整了。`;
+    return `「${c}」后面不用断，句子还没说完。`;
+  }
+}
+if(!S.jg)S.jg={};
+const jState=g=>S.jg[g]||(S.jg[g]={step:0,pass:false,done:{}});
+const jUnlocked=g=>g===0||(S.jg[g-1]&&S.jg[g-1].pass);
+let jCur=null;
+const JSTEP=["学线索","练断句","过关"];
+
+function jdModule(host){
+  if(jCur===null){jCur=JLV.findIndex((_,g)=>!jState(g).pass);if(jCur<0)jCur=0}
+  const g=jCur,L=JLV[g],st=jState(g);
+  host.innerHTML=`<details class="guide"><summary>这个训练怎么用</summary><p>一共 6 关，每关只练一种断句线索，前一关过关才能进下一关。每关三步：先<b>学线索</b>，看例句怎么断；再<b>练断句</b>，点字就在它后面画一个句读圈；全部断对就<b>过关</b>。</p><p>点「核对」后，断错的地方会给出具体提示。点虚点圈标出的位置可断可不断，不算对错。</p></details>
+  <div class="stepper"><nav class="grail" aria-label="句读关卡"><div class="grail-h">六关</div>${JLV.map((x,k)=>{const sk=jState(k),un=jUnlocked(k);
+   return `<button class="gbtn${k===g?" on":""}${sk.pass?" pass":""}" data-g="${k}" ${un?"":"disabled"}><span class="gn">${x.n}</span><span><span class="gt">${x.t}</span><br><span class="gr">${x.clue.slice(0,4).join(" ")}</span></span><span class="gs">${sk.pass?"過":un?JSTEP[sk.step]:"未解锁"}</span></button>`}).join("")}</nav><div class="gmain" id="jmain"></div></div>`;
+  host.querySelectorAll(".gbtn").forEach(b=>b.onclick=()=>{jCur=+b.dataset.g;jdModule(host)});
+  const m=host.querySelector("#jmain");
+  const bar=`<div class="steps">${JSTEP.map((n,k)=>`${k?`<span class="st-line${k<=st.step?" past":""}"></span>`:""}<span class="st${k===st.step?" now":k<st.step?" past":""}"><i>${k+1}</i><span>${n}</span></span>`).join("")}</div>`;
+  const head=`${bar}<div class="g-title">第${L.n}关 · ${L.t}</div>`;
+  const go=k=>{st.step=k;save();jdModule(host);document.getElementById("lesson").scrollIntoView({block:"start"})};
+  if(st.step===0){
+    const raw=[...L.demo.raw].map(c=>c==="|"?'<i class="cut"></i>':(L.demo.mark.includes(c)?`<b>${c}</b>`:c)).join("");
+    m.innerHTML=head+`<div class="g-why">${L.why}</div><div class="clue">${L.clue.map(c=>`<span>${c}</span>`).join("")}</div>
+    <div class="demo" id="demo"><div class="raw">${raw}</div><div class="why" id="dwhy" hidden>${L.demo.why}</div><div class="src">${L.demo.src}</div></div>
+    <div class="g-actions"><button class="btn btn-line" id="sh">演示断句</button><button class="btn btn-zhu" id="nx">我懂了，开始练习 →</button></div>`;
+    m.querySelector("#sh").onclick=()=>{m.querySelector("#demo").classList.add("on");m.querySelector("#dwhy").hidden=false};
+    m.querySelector("#nx").onclick=()=>go(1);
+  }else if(st.step===1){
+    let k=L.drills.findIndex((_,j)=>!st.done[j]);if(k<0)k=0;jDrill(m,head,g,k,host);
+  }else{
+    m.innerHTML=head+`<div class="pass-card"><div class="pass-seal">過<br>關</div><div class="pass-score">第${L.n}关的 ${L.drills.length} 段全部断对。</div>
+    <div class="pass-recap">${L.clue.map(c=>`<span>${c}</span>`).join("")}</div>
+    <div class="g-actions" style="justify-content:center">${g+1<JLV.length?`<button class="btn btn-zhu" id="ng">进入第${JLV[g+1].n}关 · ${JLV[g+1].t} →</button>`:`<button class="btn btn-zhu" id="nl">六关全部通过，去第六课读原典 →</button>`}
+    <button class="btn btn-line" id="rp">再练一遍</button></div></div>`;
+    const ng=m.querySelector("#ng");if(ng)ng.onclick=()=>{jCur=g+1;jdModule(host)};
+    const nl=m.querySelector("#nl");if(nl)nl.onclick=()=>openLesson(6);
+    m.querySelector("#rp").onclick=()=>{st.done={};go(1)};
+  }
+}
+
+function jDrill(m,head,g,k,host){
+  const L=JLV[g],st=jState(g);const [text,src]=L.drills[k];const {chars,brk,opt}=jparse(text);const mine=new Set();
+  m.innerHTML=head+`<div class="drill-meta"><span class="src">第 ${k+1} / ${L.drills.length} 段 · ${src} · ${chars.length} 字</span><span class="ddots">${L.drills.map((_,j)=>`<i class="${st.done[j]?"y":j===k?"c":""}"></i>`).join("")}</span></div>
+  <div class="drill"><div class="vpage" id="vp"></div><div class="side">
+   <div class="prose"><p>这一关的线索：${L.clue.map(c=>`<b class="hl">${c}</b>`).join("、")}。点一个字，就在它后面画圈，再点一次取消。</p></div>
+   <div class="ctl-row"><button class="btn btn-zhu" id="chk">核对</button><button class="btn btn-line" id="hint">给我一个提示</button><button class="btn btn-line" id="ans">看答案</button></div>
+   <div class="hints" id="hs"></div>
+   <div class="ctl-row" id="nav"></div></div></div>`;
+  const vp=m.querySelector("#vp"),hs=m.querySelector("#hs");
+  const per=chars.length>40?12:10;
+  vcols(chars,per).forEach(col=>{const d=document.createElement("div");d.className="vcol";col.forEach(({c,i})=>{const s=document.createElement("span");s.className="rch";s.textContent=c;s.dataset.i=i;s.tabIndex=0;
+    const tog=()=>{s.classList.remove("miss","extra");if(mine.has(i)){mine.delete(i);s.classList.remove("brk")}else{mine.add(i);s.classList.add("brk")}};
+    s.onclick=tog;s.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog()}};d.appendChild(s)});vp.appendChild(d)});
+  const sp=i=>vp.querySelector(`.rch[data-i="${i}"]`);
+  const last=chars.length-1;
+  const need=[...brk].filter(i=>i!==last);  // 末字之后不要求点
+  const finish=()=>{st.done[k]=1;if(L.drills.every((_,j)=>st.done[j])){st.pass=true}save();refreshRing();
+    const nav=m.querySelector("#nav");const nk=L.drills.findIndex((_,j)=>!st.done[j]);
+    nav.innerHTML=nk>=0?`<button class="btn btn-ink" id="nd">下一段 →</button>`:`<button class="btn btn-ink" id="nd">过关 →</button>`;
+    m.querySelector("#nd").onclick=()=>{if(nk>=0)jDrill(m,head,g,nk,host);else{st.step=2;save();jdModule(host)}};
+    m.querySelectorAll(".gbtn").forEach(()=>{});};
+  m.querySelector("#chk").onclick=()=>{
+    const miss=need.filter(i=>!mine.has(i)),extra=[...mine].filter(i=>!brk.has(i)&&!opt.has(i)&&i!==last);
+    vp.querySelectorAll(".rch").forEach(s=>s.classList.remove("miss","extra"));
+    miss.forEach(i=>sp(i).classList.add("miss"));extra.forEach(i=>sp(i).classList.add("extra"));
+    opt.forEach(i=>{const s=sp(i);if(s){s.classList.add("opt")}});
+    if(!miss.length&&!extra.length){hs.innerHTML=`<div class="ok">全部断对，共 ${need.length} 处。</div>`;finish();return}
+    const msgs=[...miss.slice(0,2).map(i=>jHint(chars,i,"miss")),...extra.slice(0,2).map(i=>jHint(chars,i,"extra"))];
+    hs.innerHTML=`<div>漏断 ${miss.length} 处（虚线圈），多断 ${extra.length} 处（灰色实心圈）。</div>`+msgs.map(x=>`<div>${x}</div>`).join("");
+  };
+  m.querySelector("#hint").onclick=()=>{const i=need.find(i=>!mine.has(i));
+    if(i===undefined){const e=[...mine].find(i=>!brk.has(i)&&!opt.has(i)&&i!==last);if(e===undefined){hs.innerHTML=`<div>看起来都断好了，点「核对」确认。</div>`;return}
+      sp(e).classList.add("hint-pulse");hs.innerHTML=`<div>${jHint(chars,e,"extra")}</div>`;setTimeout(()=>sp(e).classList.remove("hint-pulse"),2500);return}
+    const s=sp(i);s.classList.add("hint-pulse");setTimeout(()=>s.classList.remove("hint-pulse"),2500);hs.innerHTML=`<div>${jHint(chars,i,"miss")}</div>`};
+  m.querySelector("#ans").onclick=()=>{mine.clear();vp.querySelectorAll(".rch").forEach(s=>{const i=+s.dataset.i;s.classList.remove("miss","extra");s.classList.toggle("brk",brk.has(i));if(brk.has(i))mine.add(i);if(opt.has(i))s.classList.add("opt","brk")});
+    hs.innerHTML=`<div>这是参考断法：<span class="tc">${text.replace(/·/g,"")}</span></div><div>看熟后点下面的按钮，再自己断一遍。看答案不算过关。</div>`;
+    m.querySelector("#nav").innerHTML=`<button class="btn btn-ink" id="rd">重新断这一段</button>`;m.querySelector("#rd").onclick=()=>jDrill(m,head,g,k,host)};
+}
+
+/* ================= TOOLS ================= */
+const LK=[];
+RAD.forEach(([s,t,alt,ex,nt])=>{LK.push({s,t:t,d:"偏旁 · "+nt+(alt?"；单字作「"+alt+"」":""),tag:"第一课"});ex.forEach(e=>LK.push({s:e[0],t:e[1],d:"偏旁 "+s+" → "+t,tag:"第一课"}))});
+MULTI.forEach(([ch,ws])=>ws.forEach(([sw,tw,nt])=>LK.push({s:sw,t:tw,d:nt,tag:"一简多繁",key:ch})));
+INH.forEach(([s,tw,cl,nt])=>LK.push({s,t:cl,d:"古籍传承字形；今台湾作「"+tw+"」。"+nt,tag:"传承字形"}));
+VAR.forEach(([fs,s,nt])=>LK.push({s,t:fs.join(" "),d:"古籍异体。"+nt,tag:"异体"}));
+const lk=document.getElementById("lk"),lkRes=document.getElementById("lkRes");
+function doLk(){const q=lk.value.trim();if(!q){lkRes.innerHTML=`<p class="empty">试试输入"干"或者"为"。</p>`;return}
+  const r=LK.filter(x=>x.s.includes(q)||(x.key&&q.includes(x.key))||x.t.includes(q)).slice(0,30);
+  lkRes.innerHTML=r.length?r.map(x=>`<div class="lk-item"><span class="s">${x.s.length>2?"":x.s}</span><span class="t tc">${x.t}</span><span class="d">${x.s.length>2?x.s+" · ":""}${x.d}</span><span class="tag">${x.tag}</span></div>`).join(""):`<p class="empty">课程里没有收录"${q}"。可以去汉典（zdic.net）查。</p>`}
+lk.oninput=doLk;doLk();
+
+function renderMist(){const el=document.getElementById("mist");const ids=Object.keys(S.miss).filter(id=>byId[id]);
+  el.innerHTML=ids.length?ids.map(id=>{const it=byId[id];return `<span>${it.kind==="multi"?it.full:it.kind==="var"?it.q:it.a}<small>${it.kind==="var"?it.a:it.kind==="inh"?it.simp:it.q}</small></span>`}).join(""):`<p class="empty">还没有错题。做练习时答错的字会出现在这里。</p>`}
+renderMist();
+document.getElementById("mistGo").onclick=()=>{const pool=Object.keys(S.miss).filter(id=>byId[id]).map(id=>byId[id]);
+  const el=document.getElementById("lesson");document.querySelectorAll(".ltab").forEach(t=>t.setAttribute("aria-selected",false));
+  el.innerHTML=`<div class="l-head"><div class="l-num">錯</div><div><h3>错题练习</h3><div class="goal">答对一次，就会从错题本移除。</div></div><div></div></div><div class="l-body" id="lbody"></div>`;
+  quiz(document.getElementById("lbody"),pool,0,true);document.getElementById("study").scrollIntoView()};
+document.getElementById("resetAll").onclick=()=>{if(confirm("确定清空全部学习进度和错题吗？此操作无法撤销。")){S={m:{},miss:{},read:{},intro:false,rg:{},jg:{}};gCur=null;jCur=null;save();renderPath();renderMist();openLesson(0)}};
+
+document.getElementById("ctaGo").onclick=()=>{const first=LES.findIndex((_,i)=>!isDone(i));openLesson(first<0?6:first);document.getElementById("study").scrollIntoView()};
+window.openLesson=openLesson;
+renderPath();openLesson(0);
+</script>
+</body>
+</html>
